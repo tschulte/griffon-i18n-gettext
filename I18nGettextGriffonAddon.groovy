@@ -36,10 +36,7 @@ class I18nGettextGriffonAddon {
     }
 
     private getI18n = { Locale locale ->
-        Class clazz = I18nGettextGriffonAddon.class
-        ClassLoader loader = clazz.classLoader
-        while (loader.parent && loader.parent.findResource
-        I18nFactory.getI18n(clazz.name, 'i18ngettext.Messages', loader.parent?:loader, locale, I18nFactory.DEFAULT)
+        I18nFactory.getI18n(I18nGettextGriffonAddon.class, 'i18ngettext.Messages', locale)
     }
     
     def methods = [

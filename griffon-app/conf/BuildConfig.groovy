@@ -22,7 +22,7 @@ griffon.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
         // runtime 'mysql:mysql-connector-java:5.1.5'
-	runtime 'org.xnap.commons:gettext-commons:0.9.6'
+	compile 'org.xnap.commons:gettext-commons:0.9.6'
     }
 }
 

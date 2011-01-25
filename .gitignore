@@ -1,0 +1,10 @@
+griffon-app/conf/webstart/
+griffon-app/i18n/messages.properties
+griffon-app/resources/
+griffon-i18n-gettext-*.zip
+griffon-i18n-gettext-test/griffon-app/i18n/messages.properties
+staging/
+target/
+griffonw
+griffonw.bat
+plugin.xml

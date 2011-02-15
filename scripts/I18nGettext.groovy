@@ -36,11 +36,9 @@ target( main: "Scan all .groovy files for tr() trn() and merge with all .po file
     switch( parameters[0] ){
         case 'init':
         case 'touchpo':
-            fileNameToCreate = "Messages"
+            fileNameToCreate = "default"
             if(parameters.size() > 1) {
                 fileNameToCreate = parameters[1]
-            } else {
-                fileNameToCreate = "Messages"
             }
             touchpo()
             break

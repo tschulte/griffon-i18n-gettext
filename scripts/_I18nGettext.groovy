@@ -9,12 +9,12 @@ def getConfigValue = { what->
     try {
        switch( what ){
             case "inputFileCharset":
-                result = config?.i18n?.inputFileCharset?config?.i18n?.inputFileCharset:"UTF-8"
+                result = config?.i18n?.inputFileCharset?:"UTF-8"
                 return result 
             break
     
             case "excludedDirsArray":
-                result = config?.i18n?.excludedDirsArray?config?.i18n.excludedDirsArray:[]
+                result = config?.i18n?.excludedDirsArray?:[]
                 return result 
             break
     
@@ -23,6 +23,11 @@ def getConfigValue = { what->
                 return result 
             break
             
+            case "bundleName":
+                result = config?.i18n?.bundleName?:"Messages"
+                return result 
+            break
+
             default:
                 return null
         }
@@ -44,7 +49,7 @@ target( scan:"Generate .pot file from sources" ){
     def noWrap = getConfigValue( "noWrapPoLines" )?"--no-wrap":""
 
     // trash the last .pot file
-    def keysFileName = i18nDir+"/keys.pot"
+    def keysFileName = "${i18nDir}/keys.pot"
     new File( keysFileName ).write("")
     
     new File(".").eachFileRecurse{ file ->
@@ -66,13 +71,13 @@ target( scan:"Generate .pot file from sources" ){
                 } 
                         
                 if( programmingLanguageIdentifier.length()>0 ){
-                    def command = 'xgettext -j --force-po '+noWrap+' -ktrc -ktr -kmarktr -ktrn:1,2 --from-code='+charset+' -o '+i18nDir+'/keys.pot -L'+programmingLanguageIdentifier+' '+file.getCanonicalPath()
+                    def command = "xgettext -j --add-comments --force-po ${noWrap} -ktrc -ktr -kmarktr -ktrn:1,2 --from-code=${charset} -o ${i18nDir}/keys.pot -L${programmingLanguageIdentifier} ${file.getCanonicalPath()}"
                     
                     println( command )
                     def e = command.execute()
                     e.waitFor()
                     if( e.exitValue() ){
-                        println( "Error: "+e.err.text )
+                        println( "Error: ${e.err.text}")
                     }
                 }
             }
@@ -87,7 +92,7 @@ target( scan:"Generate .pot file from sources" ){
 target( mergepo:"Merging .po files with .pot file" ){
 
     println( "\nMerging .po files with .pot file." )
-    fileNameToCreate = "Messages"
+    fileNameToCreate = "default"
     touchpo()        // the default Resource
 
     List fl = new File(i18nDir).listFiles([accept:{file->file ==~ /.*?\.po/ }] as FileFilter).toList().name
@@ -97,12 +102,12 @@ target( mergepo:"Merging .po files with .pot file" ){
         if( !it.contains('~') ){
             String lang = it.replace( ".po", "" )
 
-            command = 'msgmerge '+noWrap+' --backup=off -U '+i18nDir+'/'+lang+'.po '+i18nDir+'/keys.pot'
+            command = "msgmerge ${noWrap} --backup=off -U ${i18nDir}/${lang}.po ${i18nDir}/keys.pot"
             println( command )
             def e = command.execute()
             e.waitFor()
             if( e.exitValue() ){
-                println( "Error: "+e.err.text )
+                println( "Error: ${e.err.text}")
             }
         }
     }
@@ -118,28 +123,28 @@ target( makemo:"Compile .mo files" ){
     }
     
     def i18nOutputDirCanonical = destination.getCanonicalPath()
+    def bundleName = getConfigValue("bundleName")
 
     List fl = new File(i18nDir).listFiles([accept:{file->file ==~ /.*?\.po/ }] as FileFilter).toList().name
     fl.each(){
-        if( !it.contains('~') ){
+        if( !it.contains('~') ) {
             String lang = it.replace( ".po", "" )
 
-            if( lang=="Messages" ){
-                command = 'msgfmt --java2 -d '+i18nOutputDirCanonical+' -r i18ngettext.Messages '+i18nDir+'/Messages.po' // the default Resource
-            } else {
-                command = 'msgfmt --java2 -d '+i18nOutputDirCanonical+' -r i18ngettext.Messages -l '+lang+' '+i18nDir+'/'+lang+'.po'
+            command = "msgfmt --java2 -d ${i18nOutputDirCanonical} -r i18ngettext.${bundleName} ${i18nDir}/${lang}.po" // the default Resource
+            if( lang!="default" ) {
+                command += " -l ${lang}"
             }
 
             println( command )
             def e = command.execute()
             e.waitFor()
             if( e.exitValue() ){
-                println( "Error: "+e.err.text )
+                println("Error: ${e.err.text}")
             }
         }
     }
     
-    ant.jar( basedir:"${i18nOutputDirCanonical}", includes:"i18ngettext/*", destfile:"./lib/i18ngettext.jar")
+    ant.jar( basedir:"${i18nOutputDirCanonical}", includes:"i18ngettext/*", destfile:"./lib/i18n-gettext-${bundleName}.jar")
     new File(destination, "i18ngettext").deleteDir()
 }
 
@@ -166,34 +171,33 @@ msgstr ""
 "Content-Type: text/plain; charset=${charset}\\n"
 "Content-Transfer-Encoding: 8bit\\n"
 """
-
     if( fileNameToCreate.length()>0 ){
         
-        def fileName = fileNameToCreate.replace( ".po", "" )
-        def destination = new File( ""+i18nDir+'/'+fileName+'.po' );
+        def fileName = fileNameToCreate.replace(".po", "")
+        def destination = new File(i18nDir, "${fileName}.po")
 
         if( destination.exists() ){
-            if( fileName != "Messages" ){
-                println( "File: "+destination.getCanonicalPath()+" already exists. Will not recreate it.")
+            if( fileName != "default" ){
+                println( "File: ${destination.getCanonicalPath()} already exists. Will not recreate it.")
             }
         } else {
-            if( fileName=="Messages" ){
+            if( fileName=="default" ){
                 // write our default header to the file
                 destination.write( header, 'UTF-8' )
             } else {
-                // make sure the "Messages.po" file exists
-                fileNameToCreate = "Messages"
+                // make sure the "default.po" file exists
+                fileNameToCreate = "default"
                 touchpo()
 
-                def source = new File( ""+i18nDir+'/Messages.po' );
+                def source = new File(i18nDir, 'default.po')
                 if( source ){
-                    // copy the "Messages.po" file to the new name.
+                    // copy the "default.po" file to the new name.
                     destination.withOutputStream{ out->out.write source.readBytes() }
                 } else {
                     // write our default header to the file
                     destination.write( header, 'UTF-8' )
                 }
-                println( "File: "+destination.getCanonicalPath()+" has been created.")
+                println("File: ${destination.getCanonicalPath()} has been created.")
             }
         }
     }

@@ -10,23 +10,23 @@ class I18nGettextGriffonAddon {
             this.app = app
     }
 
-    private tr = { Map params = [:], text, Object... objects ->
-        if (params) 
+    private tr = { Map params = [:], String text, Object... objects ->
+        if (objects) 
            return extractParameters(params, getI18n(params).tr(text, (Object[])objects))
        return extractParameters(params, getI18n(params).tr(text))
     }
 
-    private trc = { Map params = [:], context, text ->
+    private trc = { Map params = [:], String context, String text ->
         return extractParameters(params, getI18n(params).trc(context, text))
     }
 
-    private trn = { Map params = [:], text, long n, Object... objects ->
+    private trn = { Map params = [:], String text, long n, Object... objects ->
         if (objects) 
             return extractParameters(params, getI18n().trn(text, n, (Object[])objects))
         return extractParameters(params, getI18n(params).trn(text, n))
     }
    
-    private trnc = { Map params = [:], context, text, long n, Object... objects ->
+    private trnc = { Map params = [:], String context, String text, long n, Object... objects ->
         if (objects) 
             return extractParameters(params, getI18n().trnc(context, text, n, (Object[])objects))
         return extractParameters(params, getI18n(params).trnc(context, text, n))

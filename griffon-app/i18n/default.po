@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-16 07:32+0100\n"
+"POT-Creation-Date: 2011-02-16 07:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,5 +34,10 @@ msgstr ""
 
 #. Comment
 #: /home/tobias/griffon/griffon-i18n-gettext/test/integration/I18nGettextGriffonAddonTests.groovy:44
+#: /home/tobias/griffon/griffon-i18n-gettext/test/integration/I18nGettextGriffonAddonTests.groovy:45
 msgid "Hello $name"
+msgstr ""
+
+#: /home/tobias/griffon/griffon-i18n-gettext/test/integration/I18nGettextGriffonAddonTests.groovy:47
+msgid "Hello ${name}"
 msgstr ""

@@ -53,6 +53,20 @@ class I18nGettextGriffonAddonTests extends GriffonUnitTestCase {
         assertEquals("Heute ist der ${format.format(today)}", 
                 addon.tr("Today is \$date", date: formatted, rb: 'I18nGettext'))
     }
+
+    
+    public void testTrcGerman() {
+        assertEquals("A", addon.trc("Short for order", "O", rb: "I18nGettext"))
+    }
+    
+    public void testTrnGerman() {
+        assertEquals("Ich habe einen Hund", addon.trn("I have one dog", "I have \${dogCount} dogs", 1, rb: "I18nGettext"))
+    }
+
+    public void testTrncGerman() {
+        assertEquals("ein Hund", addon.trnc("Dog count", "one dog", "\${dogCount} dogs", 1, rb: "I18nGettext"))
+    }
+
     
     private void setLocale(Locale locale) {
         app.locale = locale

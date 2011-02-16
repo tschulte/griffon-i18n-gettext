@@ -72,7 +72,7 @@ target( scan:"Generate .pot file from sources" ){
                 } 
                         
                 if( programmingLanguageIdentifier.length()>0 ){
-                    def command = "xgettext -j --add-comments --force-po ${noWrap} -ktrc -ktr -kmarktr -ktrn:1,2 --from-code=${charset} -o ${tmpKeysFileName} -L${programmingLanguageIdentifier} ${file.getCanonicalPath()}"
+                    def command = "xgettext -j --add-comments --force-po ${noWrap} -ktrc:1c,2 -ktr -kmarktr -ktrn:1,2 -ktrnc:1c,2,3 --from-code=${charset} -o ${tmpKeysFileName} -L${programmingLanguageIdentifier} ${file.getCanonicalPath()}"
                     
                     println( command )
                     def e = command.execute()
@@ -127,21 +127,24 @@ target( mergepo:"Merging .po files with .pot file" ){
 target( makemo:"Compile .mo files" ){
     println("\nCompiling .mo files.")
 
+    def i18nOutputDir = 'target/i18n-gettext'
     def destination = new File( i18nOutputDir );
     if( !destination.exists() ){
-        destination.mkdir()
+        destination.mkdirs()
     }
     
     def i18nOutputDirCanonical = destination.getCanonicalPath()
     def bundleName = getConfigValue("bundleName")
 
-    List fl = new File(i18nDir).listFiles([accept:{file->file ==~ /.*?\.po/ }] as FileFilter).toList().name
-    fl.each(){
-        if( !it.contains('~') ) {
-            String lang = it.replace( ".po", "" )
-
-            command = "msgfmt --java2 -d ${i18nOutputDirCanonical} -r i18ngettext.${bundleName} ${i18nDir}/${lang}.po" // the default Resource
-            if( lang!="default" ) {
+    List fl = new File(i18nDir).listFiles([accept:{file->file ==~ /.*?\.po/ }] as FileFilter) as List
+    fl.each(){ poFile ->
+        if( !poFile.name.contains('~') ) {
+            String lang = poFile.name.replace(".po", "").replace('default', '')
+            def classFile = new File(i18nOutputDir, "i18ngettext/${bundleName}${lang? '_' + lang : ''}.class")
+            if (classFile.exists() && classFile.lastModified() >= poFile.lastModified())
+                return
+            command = "msgfmt --java2 -d ${i18nOutputDirCanonical} -r i18ngettext.${bundleName} ${poFile.getCanonicalPath()}" // the default Resource
+            if (lang) {
                 command += " -l ${lang}"
             }
 
@@ -155,7 +158,6 @@ target( makemo:"Compile .mo files" ){
     }
     
     ant.jar( basedir:"${i18nOutputDirCanonical}", includes:"i18ngettext/*", destfile:"./lib/i18n-gettext-${bundleName}.jar")
-    new File(destination, "i18ngettext").deleteDir()
 }
 
 

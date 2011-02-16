@@ -15,7 +15,6 @@
 //
 
 i18nDir = "./griffon-app/i18n"
-i18nOutputDir = "${i18nGettextPluginDir}/lib"
 fileNameToCreate = null
 
 includeTargets << griffonScript("_GriffonInit")

@@ -40,7 +40,9 @@ class I18nGettextGriffonAddonTests extends GriffonUnitTestCase {
     }
 
     public void testTrWithNamedParams() {
-//        assertEquals("Hallo Tobias", addon.tr("Hello \$name", name: "Tobias", rb: "I18nGettext"))
+        // Comment
+        assertEquals("Hallo Tobias", addon.tr("Hello \$name", name: "Tobias", rb: "I18nGettext"))
+        assertEquals("Salut Tobias", addon.tr("Hello \$name", name: "Tobias", rb: "I18nGettext", locale: Locale.FRENCH))
     }
     
     private void setLocale(Locale locale) {

@@ -50,7 +50,8 @@ target( scan:"Generate .pot file from sources" ){
 
     // trash the last .pot file
     def keysFileName = "${i18nDir}/keys.pot"
-    new File( keysFileName ).write("")
+    def tmpKeysFileName = "${keysFileName}.tmp"
+    new File( tmpKeysFileName ).write("")
     
     new File(".").eachFileRecurse{ file ->
         def currentFileCanonicalPath = file.getCanonicalPath()
@@ -71,7 +72,7 @@ target( scan:"Generate .pot file from sources" ){
                 } 
                         
                 if( programmingLanguageIdentifier.length()>0 ){
-                    def command = "xgettext -j --add-comments --force-po ${noWrap} -ktrc -ktr -kmarktr -ktrn:1,2 --from-code=${charset} -o ${i18nDir}/keys.pot -L${programmingLanguageIdentifier} ${file.getCanonicalPath()}"
+                    def command = "xgettext -j --add-comments --force-po ${noWrap} -ktrc -ktr -kmarktr -ktrn:1,2 --from-code=${charset} -o ${tmpKeysFileName} -L${programmingLanguageIdentifier} ${file.getCanonicalPath()}"
                     
                     println( command )
                     def e = command.execute()
@@ -83,7 +84,16 @@ target( scan:"Generate .pot file from sources" ){
             }
         }
     }
-
+    new File(keysFileName).withPrintWriter(charset) { printWriter ->
+        new File(tmpKeysFileName).eachLine(charset) { line ->
+            if (line.startsWith('msgid'))
+                printWriter.println(line.replace(/\\$/, '$'))
+            else
+                printWriter.println(line)
+            line
+        }
+    }
+    new File(tmpKeysFileName).delete()
     mergepo()
 }
 

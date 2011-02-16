@@ -9,3 +9,4 @@ griffonw
 griffonw.bat
 plugin.xml
 lib/i18n-gettext-I18nGettext.jar
+griffon-i18n-gettext-test/lib/i18n-gettext-Messages.jar

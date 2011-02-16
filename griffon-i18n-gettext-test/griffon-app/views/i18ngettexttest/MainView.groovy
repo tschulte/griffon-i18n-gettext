@@ -10,5 +10,5 @@ application(title: 'I18nGettextTest',
                imageIcon('/griffon-icon-32x32.png').image,
                imageIcon('/griffon-icon-16x16.png').image]) {
     // add content here
-    label(tr("Hello")) // deleteme
+    label(tr("Content goes here")) // deleteme
 }

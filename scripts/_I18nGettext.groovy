@@ -9,22 +9,22 @@ def getConfigValue = { what->
     try {
        switch( what ){
             case "inputFileCharset":
-                result = config?.i18n?.inputFileCharset?:"UTF-8"
+                result = buildConfig?.i18n?.inputFileCharset?:"UTF-8"
                 return result 
             break
     
             case "excludedDirsArray":
-                result = config?.i18n?.excludedDirsArray?:[]
+                result = buildConfig?.i18n?.excludedDirsArray?:[]
                 return result 
             break
     
             case "noWrapPoLines":
-                result = config?.i18n?.noWrapPoLines?true:false
+                result = buildConfig?.i18n?.noWrapPoLines?true:false
                 return result 
             break
             
             case "bundleName":
-                result = config?.i18n?.bundleName?:"Messages"
+                result = buildConfig?.i18n?.bundleName?:"Messages"
                 return result 
             break
 

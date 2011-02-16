@@ -21,4 +21,3 @@ msgstr ""
 #: /home/tobias/griffon/griffon-i18n-gettext/griffon-i18n-gettext-test/griffon-app/views/i18ngettexttest/MainView.groovy:13
 msgid "Content goes here"
 msgstr ""
-

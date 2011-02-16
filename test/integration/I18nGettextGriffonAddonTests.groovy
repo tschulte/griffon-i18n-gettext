@@ -2,6 +2,8 @@
 import griffon.core.GriffonApplication
 import griffon.test.*
 
+import java.text.*
+
 class I18nGettextGriffonAddonTests extends GriffonUnitTestCase {
     GriffonApplication app
     I18nGettextGriffonAddon addon
@@ -45,6 +47,11 @@ class I18nGettextGriffonAddonTests extends GriffonUnitTestCase {
         assertEquals("Salut Tobias", addon.tr("Hello \$name", name: "Tobias", rb: "I18nGettext", locale: Locale.FRENCH))
         
         assertEquals("Hallo Tobias", addon.tr("Hello \${name}", name: 'Tobias', rb: 'I18nGettext'))
+        def format = DateFormat.getDateInstance(DateFormat.SHORT, Locale.GERMAN)
+        def today = new Date()
+        def formatted = format.format(today)
+        assertEquals("Heute ist der ${format.format(today)}", 
+                addon.tr("Today is \$date", date: formatted, rb: 'I18nGettext'))
     }
     
     private void setLocale(Locale locale) {

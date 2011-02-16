@@ -8,3 +8,4 @@ target/
 griffonw
 griffonw.bat
 plugin.xml
+lib/i18n-gettext-I18nGettext.jar

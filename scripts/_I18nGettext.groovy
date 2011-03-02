@@ -3,31 +3,16 @@ includeTargets << gant.targets.Clean
 includeTool << gant.tools.Execute
 
 def getConfigValue = { what->
-
-    def result = null
-
     try {
-       switch( what ){
+       switch(what) {
             case "inputFileCharset":
-                result = buildConfig?.i18n?.inputFileCharset?:"UTF-8"
-                return result 
-            break
-    
+                return buildConfig?.i18n?.inputFileCharset ?: "UTF-8"
             case "excludedDirs":
-                result = buildConfig?.i18n?.excludedDirs?:[]
-                return result 
-            break
-    
-            case "noWrapPoLines":
-                result = buildConfig?.i18n?.noWrapPoLines?true:false
-                return result 
-            break
-            
+                return buildConfig?.i18n?.excludedDirs ?: []
             case "bundleName":
-                result = buildConfig?.i18n?.bundleName?:"Messages"
-                return result 
-            break
-
+                return buildConfig?.i18n?.bundleName ?: "Messages"
+            case "xgettextParams":
+                return buildConfig?.i18n?.xgettextParams ?: "--add-comments"
             default:
                 return null
         }
@@ -44,9 +29,9 @@ target( scan:"Generate .pot file from sources" ){
         
     println("\nGenerating .pot file from sources.")
 
-    def charset = getConfigValue( "inputFileCharset" )
-    def excludedDirs = getConfigValue( "excludedDirs" )
-    def noWrap = getConfigValue( "noWrapPoLines" )?"--no-wrap":""
+    def charset = getConfigValue("inputFileCharset")
+    def excludedDirs = getConfigValue("excludedDirs")
+    def xgettextParams = getConfigValue("xgettextParams")
 
     // trash the last .pot file
     def keysFileName = "${i18nDir}/keys.pot"
@@ -71,8 +56,8 @@ target( scan:"Generate .pot file from sources" ){
                     programmingLanguageIdentifier = "java"
                 } 
                         
-                if( programmingLanguageIdentifier.length()>0 ){
-                    def command = "xgettext -j --add-comments --force-po ${noWrap} -ktrc:1c,2 -ktr -kmarktr -ktrn:1,2 -ktrnc:1c,2,3 --from-code=${charset} -o ${tmpKeysFileName} -L${programmingLanguageIdentifier} ${file.getCanonicalPath()}"
+                if( programmingLanguageIdentifier.length()>0 ) {
+                    def command = "xgettext --join-existing --force-po -ktrc:1c,2 -ktr -kmarktr -ktrn:1,2 -ktrnc:1c,2,3 ${xgettextParams} --from-code=${charset} -o ${tmpKeysFileName} -L${programmingLanguageIdentifier} ${file.getCanonicalPath()}"
                     
                     println( command )
                     def e = command.execute()

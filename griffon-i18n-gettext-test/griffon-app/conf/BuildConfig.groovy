@@ -136,5 +136,5 @@ griffon {
     }
 }
 
-i18n.excludedDirsArray = ['SubModule']
+i18n.excludedDirs = ['SubModule']
 

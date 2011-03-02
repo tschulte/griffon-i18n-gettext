@@ -37,6 +37,6 @@ griffon {
 griffon.jars.destDir='target/addon'
 
 i18n.bundleName = 'I18nGettext'
-i18n.excludedDirsArray = ['griffon-i18n-gettext-test']
+i18n.excludedDirs = ['griffon-i18n-gettext-test']
 
 //griffon.jars.jarName='I18nGettextGriffonAddon.jar'

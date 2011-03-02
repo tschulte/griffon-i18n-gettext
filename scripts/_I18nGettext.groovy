@@ -13,8 +13,8 @@ def getConfigValue = { what->
                 return result 
             break
     
-            case "excludedDirsArray":
-                result = buildConfig?.i18n?.excludedDirsArray?:[]
+            case "excludedDirs":
+                result = buildConfig?.i18n?.excludedDirs?:[]
                 return result 
             break
     
@@ -45,7 +45,7 @@ target( scan:"Generate .pot file from sources" ){
     println("\nGenerating .pot file from sources.")
 
     def charset = getConfigValue( "inputFileCharset" )
-    def excludedDirsArray = getConfigValue( "excludedDirsArray" )
+    def excludedDirs = getConfigValue( "excludedDirs" )
     def noWrap = getConfigValue( "noWrapPoLines" )?"--no-wrap":""
 
     // trash the last .pot file
@@ -57,7 +57,7 @@ target( scan:"Generate .pot file from sources" ){
         def currentFileCanonicalPath = file.getCanonicalPath()
         
         def skipThis = false
-        excludedDirsArray.any { 
+        excludedDirs.any { 
             if( currentFileCanonicalPath.startsWith( new File(it).getCanonicalPath() ) ){
                 skipThis = true
             }

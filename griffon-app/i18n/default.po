@@ -1,21 +1,21 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR AUTHOR
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Language default translations for griffon-i package.
+# Copyright (C) 2011 THE griffon-i'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the griffon-i package.
+# Automatically generated, 2011.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: griffon-i 18n-gettext\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-16 21:54+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2011-03-02 21:33+0100\n"
+"PO-Revision-Date: 2011-03-02 21:33+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: default\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: /home/tobias/griffon/griffon-i18n-gettext/test/integration/I18nGettextGriffonAddonTests.groovy:19
 #: /home/tobias/griffon/griffon-i18n-gettext/test/integration/I18nGettextGriffonAddonTests.groovy:20

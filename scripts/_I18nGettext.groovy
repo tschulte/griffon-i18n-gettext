@@ -13,6 +13,8 @@ def getConfigValue = { what->
                 return buildConfig?.i18n?.bundleName ?: "Messages"
             case "xgettextParams":
                 return buildConfig?.i18n?.xgettextParams ?: "--add-comments"
+            case "msginitParams":
+                return buildConfig?.i18n?.msginitParams ?: ""
             default:
                 return null
         }
@@ -48,7 +50,7 @@ target( scan:"Generate .pot file from sources" ){
             }
         } 
         
-        if( !skipThis ){
+        if (!skipThis) {
             if( file.isFile() ){
                 // switch programming language identifier for best recognition rates
                 def programmingLanguageIdentifier = ""
@@ -73,6 +75,8 @@ target( scan:"Generate .pot file from sources" ){
         new File(tmpKeysFileName).eachLine(charset) { line ->
             if (line.startsWith('msgid'))
                 printWriter.println(line.replace(/\\$/, '$'))
+            else if (line == '"Content-Type: text/plain; charset=CHARSET\\n"')
+                printWriter.println(line.replace('CHARSET', charset))
             else
                 printWriter.println(line)
             line
@@ -147,55 +151,30 @@ target( makemo:"Compile .mo files" ){
 
 
 target( touchpo:"Initialize first .po file" ) { params->
-
-    def charset = getConfigValue( "inputFileCharset" )
-    def header = """
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR AUTHOR
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
-msgid ""
-msgstr ""
-"Project-Id-Version: PACKAGE VERSION\\n"
-"Report-Msgid-Bugs-To: \\n"
-"POT-Creation-Date: YEAR-MO-DA HO:MO+ZONE\\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n"
-"Language-Team: LANGUAGE <LL@li.org>\\n"
-"MIME-Version: 1.0\\n"
-"Content-Type: text/plain; charset=${charset}\\n"
-"Content-Transfer-Encoding: 8bit\\n"
-"""
-    if( fileNameToCreate.length()>0 ){
+    if (fileNameToCreate.length() > 0) {
         
         def fileName = fileNameToCreate.replace(".po", "")
         def destination = new File(i18nDir, "${fileName}.po")
-
-        if( destination.exists() ){
-            if( fileName != "default" ){
-                println( "File: ${destination.getCanonicalPath()} already exists. Will not recreate it.")
+        def msginitParams = getConfigValue("msginitParams")
+        if (destination.exists()) {
+            if (fileName != "default") {
+                println("File: ${destination.getCanonicalPath()} already exists. Will not recreate it.")
             }
         } else {
-            if( fileName=="default" ){
-                // write our default header to the file
-                destination.write( header, 'UTF-8' )
-            } else {
+            if (fileName != "default") {
                 // make sure the "default.po" file exists
                 fileNameToCreate = "default"
                 touchpo()
-
-                def source = new File(i18nDir, 'default.po')
-                if( source ){
-                    // copy the "default.po" file to the new name.
-                    destination.withOutputStream{ out->out.write source.readBytes() }
-                } else {
-                    // write our default header to the file
-                    destination.write( header, 'UTF-8' )
-                }
-                println("File: ${destination.getCanonicalPath()} has been created.")
             }
+            def command = "msginit ${msginitParams} --input=${i18nDir}/keys.pot --output-file=${destination.canonicalPath} --locale=${fileName} --no-translator"
+            
+            println( command )
+            def e = command.execute()
+            e.waitFor()
+            if( e.exitValue() ){
+                println( "Error: ${e.err.text}")
+            }
+            println("File: ${destination.getCanonicalPath()} has been created.")
         }
     }
 }

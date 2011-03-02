@@ -174,7 +174,6 @@ target( touchpo:"Initialize first .po file" ) { params->
             if( e.exitValue() ){
                 println( "Error: ${e.err.text}")
             }
-            println("File: ${destination.getCanonicalPath()} has been created.")
         }
     }
 }

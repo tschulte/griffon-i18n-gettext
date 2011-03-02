@@ -4,7 +4,7 @@ includeTool << gant.tools.Execute
 
 def getConfigValue = { what->
     try {
-       switch(what) {
+       switch (what) {
             case "inputFileCharset":
                 return buildConfig?.i18n?.inputFileCharset ?: "UTF-8"
             case "excludedDirs":
@@ -15,6 +15,8 @@ def getConfigValue = { what->
                 return buildConfig?.i18n?.xgettextParams ?: "--add-comments"
             case "msginitParams":
                 return buildConfig?.i18n?.msginitParams ?: ""
+            case "msgmergeParams":
+                return buildConfig?.i18n?.msgmergeParams ?: ""
             default:
                 return null
         }
@@ -27,7 +29,7 @@ def getConfigValue = { what->
 }
 
 
-target( scan:"Generate .pot file from sources" ){
+target(scan:"Generate .pot file from sources") {
         
     println("\nGenerating .pot file from sources.")
 
@@ -38,33 +40,33 @@ target( scan:"Generate .pot file from sources" ){
     // trash the last .pot file
     def keysFileName = "${i18nDir}/keys.pot"
     def tmpKeysFileName = "${keysFileName}.tmp"
-    new File( tmpKeysFileName ).write("")
+    new File(tmpKeysFileName).write("")
     
     new File(".").eachFileRecurse{ file ->
         def currentFileCanonicalPath = file.getCanonicalPath()
         
         def skipThis = false
         excludedDirs.any { 
-            if( currentFileCanonicalPath.startsWith( new File(it).getCanonicalPath() ) ){
+            if (currentFileCanonicalPath.startsWith(new File(it).getCanonicalPath())) {
                 skipThis = true
             }
         } 
         
         if (!skipThis) {
-            if( file.isFile() ){
+            if (file.isFile()) {
                 // switch programming language identifier for best recognition rates
                 def programmingLanguageIdentifier = ""
-                if( file.name.endsWith(".groovy") || file.name.endsWith(".java") ){
+                if (file.name.endsWith(".groovy") || file.name.endsWith(".java")) {
                     programmingLanguageIdentifier = "java"
                 } 
                         
-                if( programmingLanguageIdentifier.length()>0 ) {
+                if (programmingLanguageIdentifier.length() > 0) {
                     def command = "xgettext --join-existing --force-po -ktrc:1c,2 -ktr -kmarktr -ktrn:1,2 -ktrnc:1c,2,3 ${xgettextParams} --from-code=${charset} -o ${tmpKeysFileName} -L${programmingLanguageIdentifier} ${file.getCanonicalPath()}"
                     
-                    println( command )
+                    println(command)
                     def e = command.execute()
                     e.waitFor()
-                    if( e.exitValue() ){
+                    if (e.exitValue()) {
                         println( "Error: ${e.err.text}")
                     }
                 }
@@ -88,46 +90,47 @@ target( scan:"Generate .pot file from sources" ){
 
 
 
-target( mergepo:"Merging .po files with .pot file" ){
+target(mergepo:"Merging .po files with .pot file") {
 
-    println( "\nMerging .po files with .pot file." )
+    println("\nMerging .po files with .pot file.")
     fileNameToCreate = "default"
     touchpo()        // the default Resource
+    
+    def msgmergeParams = getConfigValue("msgmergeParams")
 
-    List fl = new File(i18nDir).listFiles([accept:{file->file ==~ /.*?\.po/ }] as FileFilter).toList().name
-    def noWrap = getConfigValue( "noWrapPoLines" )?"--no-wrap":""
+    List fl = new File(i18nDir).listFiles([accept: { file -> file ==~ /.*?\.po/ }] as FileFilter).toList().name
 
     fl.each(){
         if( !it.contains('~') ){
             String lang = it.replace( ".po", "" )
 
-            command = "msgmerge ${noWrap} --backup=off -U ${i18nDir}/${lang}.po ${i18nDir}/keys.pot"
-            println( command )
+            command = "msgmerge ${msgmergeParams} --backup=off -U ${i18nDir}/${lang}.po ${i18nDir}/keys.pot"
+            println(command)
             def e = command.execute()
             e.waitFor()
-            if( e.exitValue() ){
-                println( "Error: ${e.err.text}")
+            if (e.exitValue()) {
+                println("Error: ${e.err.text}")
             }
         }
     }
 }
 
 
-target( makemo:"Compile .mo files" ){
+target(makemo:"Compile .mo files") {
     println("\nCompiling .mo files.")
 
     def i18nOutputDir = 'target/i18n-gettext'
-    def destination = new File( i18nOutputDir );
-    if( !destination.exists() ){
+    def destination = new File(i18nOutputDir);
+    if (!destination.exists()) {
         destination.mkdirs()
     }
     
     def i18nOutputDirCanonical = destination.getCanonicalPath()
     def bundleName = getConfigValue("bundleName")
 
-    List fl = new File(i18nDir).listFiles([accept:{file->file ==~ /.*?\.po/ }] as FileFilter) as List
-    fl.each(){ poFile ->
-        if( !poFile.name.contains('~') ) {
+    List fl = new File(i18nDir).listFiles([accept: { file -> file ==~ /.*?\.po/ }] as FileFilter) as List
+    fl.each() { poFile ->
+        if (!poFile.name.contains('~')) {
             String lang = poFile.name.replace(".po", "").replace('default', '')
             def classFile = new File(i18nOutputDir, "i18ngettext/${bundleName}${lang? '_' + lang : ''}.class")
             if (classFile.exists() && classFile.lastModified() >= poFile.lastModified())
@@ -140,17 +143,17 @@ target( makemo:"Compile .mo files" ){
             println( command )
             def e = command.execute()
             e.waitFor()
-            if( e.exitValue() ){
+            if (e.exitValue()) {
                 println("Error: ${e.err.text}")
             }
         }
     }
     
-    ant.jar( basedir:"${i18nOutputDirCanonical}", includes:"i18ngettext/*", destfile:"./lib/i18n-gettext-${bundleName}.jar")
+    ant.jar(basedir: "${i18nOutputDirCanonical}", includes: "i18ngettext/*", destfile: "./lib/i18n-gettext-${bundleName}.jar")
 }
 
 
-target( touchpo:"Initialize first .po file" ) { params->
+target(touchpo: "Initialize first .po file") { params->
     if (fileNameToCreate.length() > 0) {
         
         def fileName = fileNameToCreate.replace(".po", "")
@@ -168,10 +171,10 @@ target( touchpo:"Initialize first .po file" ) { params->
             }
             def command = "msginit ${msginitParams} --input=${i18nDir}/keys.pot --output-file=${destination.canonicalPath} --locale=${fileName} --no-translator"
             
-            println( command )
+            println(command)
             def e = command.execute()
             e.waitFor()
-            if( e.exitValue() ){
+            if (e.exitValue()) {
                 println( "Error: ${e.err.text}")
             }
         }

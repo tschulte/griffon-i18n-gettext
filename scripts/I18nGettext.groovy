@@ -24,17 +24,16 @@ includeTool << gant.tools.Execute
 
 includeTargets << new File("${i18nGettextPluginDir}/scripts/_I18nGettext.groovy")
 
-target( main: "Scan all .groovy files for tr() trn() and merge with all .po files in "+i18nDir ) {
+target(main: "Scan all .groovy files for tr() trn() and merge with all .po files in "+i18nDir) {
 	
     parameters = []
 
-    if( args ){
+    if (args) {
         parameters = args.split("\n")
     }
 
-    switch( parameters[0] ){
+    switch (parameters[0]){
         case 'init':
-        case 'touchpo':
             fileNameToCreate = "default"
             if(parameters.size() > 1) {
                 fileNameToCreate = parameters[1]

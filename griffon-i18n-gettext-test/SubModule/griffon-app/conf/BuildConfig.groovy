@@ -57,3 +57,4 @@ log4j = {
           'groovyx.net'
     warn  'griffon'
 }
+i18n.bundleName = 'I18nSubModule'

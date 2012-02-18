@@ -15,28 +15,37 @@
 // 
 class I18nGettextGriffonPlugin {
     // the plugin version
-    def version = "0.2"
+    String version = '0.3'
     // the version or versions of Griffon the plugin is designed for
-    def griffonVersion = '0.9 > *' 
+    String griffonVersion = '0.9.5-rc1 > *'
     // the other plugins this plugin depends on
-    def dependsOn = [:]
+    Map dependsOn = [:]
     // resources that are included in plugin packaging
-    def pluginIncludes = []
+    List pluginIncludes = []
     // the plugin license
-    def license = 'Apache License, Version 2.0'
+    String license = 'Apache License, Version 2.0'
     // Toolkit compatibility. No value means compatible with all
     // Valid values are: swing, javafx, swt, pivot, gtk
-    def toolkits = []
+    List toolkits = []
     // Platform compatibility. No value means compatible with all
     // Valid values are:
     // linux, linux64, windows, windows64, macosx, macosx64, solaris
-    def platforms = []
+    List platforms = []
+    // URL where documentation can be found
+    String documentation = 'http://griffon.codehaus.org/I18nGettext+Plugin'
+    // URL where source can be found
+    String source = 'https://github.com/tschulte/griffon-i18n-gettext'
 
-    // TODO Fill in these fields
-    def author = 'Tobias Schulte'
-    def authorEmail = 'tobias.schulte@gliderpilot.de'
-    def title = 'I18n gettext plugin for griffon'
-    def description = """Based on the grails plugin i18n-gettext by Rainer Brang, Backend-Server GmbH & Co. KG.
+    List authors = [
+        [
+            name: 'Tobias Schulte',
+            email: 'tobias.schulte@gliderpilot.de'
+        ]
+    ]
+    String title = 'I18n gettext plugin for griffonI18n gettext plugin for griffonI18n gettext plugin for griffon'
+    // accepts Markdown syntax. See http://daringfireball.net/projects/markdown/ for details
+    String description = '''\
+Based on the grails plugin i18n-gettext by Rainer Brang, Backend-Server GmbH & Co. KG.
     
 This plugin adds i18n support to your app, in 'gnu gettext'-style.
 1 First, you need to wrap special tags or service calls around all strings you want to translate.
@@ -45,9 +54,9 @@ This plugin adds i18n support to your app, in 'gnu gettext'-style.
 4 Call "griffon i18n-gettext makemo" to compile your translated .po files into resource classes.
 5 repeat 1-4 each time you added some new strings to your application. Existing translations will be merged in. 
 
-During runtime: The methods, you wrapped around the strings, will pick the correct translation according to the
+-During runtime: The methods, you wrapped around the strings, will pick the correct translation according to the
 current locale, and return the translated string. You may also force a locale for a specific call.
-
+ 
 What you need: The developer needs these command line tools for the development machine: xgettext, msgmerge and msgfmt
 The translator may like: PoEdit or alike to translate texts.
 
@@ -64,7 +73,5 @@ b) Your original strings should be english, because Gnu gettext can't cope with 
 
 Many thanks to:
 Rainer Brang for his grails plugin
-"""
-    // URL to the plugin's documentation
-    def documentation = 'http://griffon.codehaus.org/I18nGettext+Plugin'
+'''
 }

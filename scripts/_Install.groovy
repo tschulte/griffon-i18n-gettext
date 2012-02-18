@@ -8,18 +8,3 @@
 //
 //    ant.mkdir(dir:"${basedir}/griffon-app/jobs")
 //
-
-// check to see if we already have a I18nGettextGriffonAddon
-boolean addonIsSet1
-builderConfig.each() { prefix, v ->
-    v.each { builder, views ->
-        addonIsSet1 = addonIsSet1 || 'I18nGettextGriffonAddon' == builder
-    }
-}
-
-if (!addonIsSet1) {
-    println 'Adding I18nGettextGriffonAddon to Builder.groovy'
-    builderConfigFile.append('''
-root.'I18nGettextGriffonAddon'.addon=true
-''')
-}

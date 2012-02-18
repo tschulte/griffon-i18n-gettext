@@ -1,4 +1,3 @@
-includeTargets << griffonScript("_GriffonInit")
 includeTargets << gant.targets.Clean
 includeTool << gant.tools.Execute
 

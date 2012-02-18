@@ -17,7 +17,6 @@
 i18nDir = "./griffon-app/i18n"
 fileNameToCreate = null
 
-includeTargets << griffonScript("_GriffonInit")
 includeTargets << griffonScript("_GriffonPackage")
 includeTargets << gant.targets.Clean
 includeTool << gant.tools.Execute

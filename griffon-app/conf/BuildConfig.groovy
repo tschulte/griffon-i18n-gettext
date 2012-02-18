@@ -1,12 +1,20 @@
 griffon.project.dependency.resolution = {
+    // implicit variables
+    // pluginName:     plugin's name
+    // pluginVersion:  plugin's version
+    // pluginDirPath:  plugin's install path
+    // griffonVersion: current Griffon version
+    // groovyVersion:  bundled groovy
+    // springVersion:  bundled Spring
+    // antVertsion:    bundled Ant
+    // slf4jVersion:   bundled Slf4j
+
     // inherit Griffon' default dependencies
     inherits("global") {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
-        griffonPlugins()
         griffonHome()
-        griffonCentral()
 
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
@@ -16,13 +24,17 @@ griffon.project.dependency.resolution = {
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
-	mavenRepo "http://gettext-commons.googlecode.com/svn/maven-repository/"
+        mavenRepo "http://gettext-commons.googlecode.com/svn/maven-repository/"
+        // pluginDirPath is only available when installed
+        // String basePath = pluginDirPath? "${pluginDirPath}/" : ''
+        // flatDir name: "${pluginName}LibDir", dirs: ["${basePath}lib"]
     }
     dependencies {
-        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+
+        // specify dependencies here under either 'build', 'compile', 'runtime' or 'test' scopes eg.
 
         // runtime 'mysql:mysql-connector-java:5.1.5'
-	compile 'org.xnap.commons:gettext-commons:0.9.6'
+        compile 'org.xnap.commons:gettext-commons:0.9.6'
     }
 }
 
@@ -34,9 +46,19 @@ griffon {
     }
 }
 
-griffon.jars.destDir='target/addon'
+log4j = {
+    // Example of changing the log pattern for the default console
+    // appender:
+    appenders {
+        console name: 'stdout', layout: pattern(conversionPattern: '%d [%t] %-5p %c - %m%n')
+    }
+
+    error 'org.codehaus.griffon',
+          'org.springframework',
+          'org.apache.karaf',
+          'groovyx.net'
+    warn  'griffon'
+}
 
 i18n.bundleName = 'I18nGettext'
 i18n.excludedDirs = ['griffon-i18n-gettext-test']
-
-//griffon.jars.jarName='I18nGettextGriffonAddon.jar'

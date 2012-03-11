@@ -8,3 +8,17 @@
 //
 //    ant.mkdir(dir:"${basedir}/griffon-app/jobs")
 //
+
+// Update the following configuration if your addon
+// requires a different prefix or exposes nodes in
+// a different way.
+// Remember to apply the reverse changes in _Uninstall.groovy
+//
+// check to see if we already have a TestGriffonAddon
+// def configText = '''root.'TestGriffonAddon'.addon=true'''
+// if(!(builderConfigFile.text.contains(configText))) {
+//     println 'Adding TestGriffonAddon to Builder.groovy'
+//     builderConfigFile.append("""
+// $configText
+// """)
+// }

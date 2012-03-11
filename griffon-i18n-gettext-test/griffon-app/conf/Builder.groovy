@@ -5,3 +5,5 @@ root {
         view = '*'
     }
 }
+
+root.'I18nGettextGriffonAddon'.addon=true

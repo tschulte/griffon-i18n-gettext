@@ -10,8 +10,8 @@
 // Remember to apply the reverse changes in _Install.groovy
 //
 // check to see if we already have a TestGriffonAddon
-// def configText = '''root.'TestGriffonAddon'.addon=true'''
-// if(builderConfigFile.text.contains(configText)) {
-//     println 'Removing TestGriffonAddon from Builder.groovy'
-//     builderConfigFile.text -= configText
-// }
+def configText = '''root.'I18nGettextGriffonAddon'.addon=true'''
+if(builderConfigFile.text.contains(configText)) {
+    println 'Removing TestGriffonAddon from Builder.groovy'
+    builderConfigFile.text -= configText
+}

@@ -51,6 +51,7 @@ griffon {
     memory {
         //max = '64m'
         //min = '2m'
+        //minPermSize = '2m'
         //maxPermSize = '64m'
     }
     jars {
@@ -110,14 +111,14 @@ griffon {
 
 deploy {
     application {
-        title = 'I18nGettextTest 0.1'
+        title = "${appName} ${appVersion}"
         vendor = System.properties['user.name']
-        homepage = 'http://localhost/I18nGettextTest'
+        homepage = "http://localhost/${appName}"
         description {
-            complete = 'I18nGettextTest 0.1'
-            oneline  = 'I18nGettextTest 0.1'
-            minimal  = 'I18nGettextTest 0.1'
-            tooltip  = 'I18nGettextTest 0.1'
+            complete = "${appName} ${appVersion}"
+            oneline  = "${appName} ${appVersion}"
+            minimal  = "${appName} ${appVersion}"
+            tooltip  = "${appName} ${appVersion}"
         }
         icon {
             'default' {

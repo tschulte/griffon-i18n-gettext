@@ -27,8 +27,8 @@ target(main: "Scan all .groovy files for tr() trn() and merge with all .po files
 	
     parameters = []
 
-    if (args) {
-        parameters = args.split("\n")
+    if (argsMap?.params) {
+        parameters = argsMap.params.split("\n")
     }
 
     switch (parameters[0]){
